@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from app.confidence_thresholds import FIELD_CONFIDENCE_OK
 from app.models import DocumentField, InvoiceLineItem, ValidationStatus
-from app.schema import build_empty_fields
+from app.schema import COMMON_FIELDS, TYPE_SPECIFIC_FIELDS, build_empty_fields
 from app.services.ai_cache import get_default_cache
 
 if TYPE_CHECKING:
@@ -23,6 +23,67 @@ except ImportError:
 
 _OPENAI_CALL_ERRORS = (*_OPENAI_API_ERRORS, json.JSONDecodeError, RuntimeError)
 _OPENAI_INIT_ERRORS = (ImportError, *_OPENAI_API_ERRORS)
+
+
+# 시스템이 직접 채우는 메타필드. AI 추출 대상에서 제외해야 AI가 혼동해 엉뚱한 값 안 채움.
+_SYSTEM_FIELDS: frozenset[str] = frozenset({"document_type", "approval_status", "confidence_score"})
+
+# 유형별 전용 필드에 붙일 설명(프롬프트에서 AI가 어떤 유형에 쓰는지 인지하도록).
+# 공통 필드는 schema.py 라벨을 그대로 사용하되, 유형 전용은 여기서 추가 hint 제공.
+_FIELD_HINTS: dict[str, str] = {
+    "issue_date": "작성일자/발행일/계약일/견적일/거래일자 (YYYY-MM-DD)",
+    "supplier_name": "공급자명 / 발행자 / 수행사 / 가맹점명(영수증)",
+    "supplier_biz_no": "공급자 사업자등록번호 (XXX-XX-XXXXX)",
+    "buyer_name": "공급받는자명 / 수신처 / 발주사 / 고객명(영수증, 보통 없음)",
+    "buyer_biz_no": "공급받는자 사업자등록번호 (XXX-XX-XXXXX)",
+    "supply_amount": "공급가액 / 계약금액 / 견적금액",
+    "tax_amount": "세액 / 부가세 / VAT",
+    "total_amount": "합계금액 / 총액",
+    "item_name": "대표 품목명 / 계약건명 / 견적 항목",
+    "remark": "비고 / 참고사항",
+    "approval_no": "승인번호 (영수증 전용, 8~12자리 숫자)",
+    "transaction_time": "거래일시 (영수증 전용, YYYY-MM-DD HH:MM)",
+    "card_number_masked": "마스킹된 카드번호 (영수증 전용, 예: 1234-56**-****-7890)",
+    "service_charge": "봉사료 (영수증 전용, 없으면 빈 문자열)",
+}
+
+
+def _extractable_fields() -> list[tuple[str, str]]:
+    """AI가 추출해야 할 (field_name, label) 리스트. 시스템 필드 제외, 공통 ∪ 모든 유형 전용.
+
+    schema.COMMON_FIELDS/TYPE_SPECIFIC_FIELDS가 source of truth — 새 문서 유형을 schema.py에
+    추가하면 여기서 자동으로 union에 포함돼 프롬프트와 JSON Schema enum이 함께 갱신됨.
+    """
+    seen: set[str] = set()
+    fields: list[tuple[str, str]] = []
+    for field_name, label, _required in COMMON_FIELDS:
+        if field_name in _SYSTEM_FIELDS or field_name in seen:
+            continue
+        seen.add(field_name)
+        fields.append((field_name, label))
+    for type_fields in TYPE_SPECIFIC_FIELDS.values():
+        for field_name, label, _required in type_fields:
+            if field_name in _SYSTEM_FIELDS or field_name in seen:
+                continue
+            seen.add(field_name)
+            fields.append((field_name, label))
+    return fields
+
+
+def _extractable_field_names() -> list[str]:
+    return [name for name, _label in _extractable_fields()]
+
+
+def _build_field_list_section() -> str:
+    """프롬프트의 'Fields to extract' 블록을 동적 생성. 각 줄: '- name: label — hint'."""
+    lines = []
+    for name, label in _extractable_fields():
+        hint = _FIELD_HINTS.get(name, "")
+        if hint:
+            lines.append(f"- {name}: {label} — {hint}")
+        else:
+            lines.append(f"- {name}: {label}")
+    return "\n".join(lines)
 
 
 DOCUMENT_TYPE_PROMPT = """\
@@ -53,7 +114,7 @@ Tie-breakers (apply IN ORDER):
 
 Return empty string with confidence 0.0 if none of the signals apply. Do NOT guess."""
 
-FIELD_EXTRACTION_PROMPT = """\
+_FIELD_EXTRACTION_RULES = """\
 You are an expert Korean business document field extractor.
 Extract the following fields from the given document text.
 
@@ -64,21 +125,26 @@ Rules:
 - Company names should include legal entity markers like (주), ㈜, 주식회사
 - Return empty string "" for fields not found in the document
 - For each field, provide a confidence score (0.0 to 1.0)
+- Document type-specific fields (영수증 전용 등) must still be returned even when
+  the document isn't that type — use empty string for value in that case.
 
 Document type: {document_type}
 
 Fields to extract:
-- document_type: 문서 유형
-- issue_date: 작성일자/발행일/계약일/견적일
-- supplier_name: 공급자/발행자/수행사 상호
-- supplier_biz_no: 공급자 사업자등록번호
-- buyer_name: 공급받는자/수신처/발주사 상호
-- buyer_biz_no: 공급받는자 사업자등록번호
-- supply_amount: 공급가액/계약금액/견적금액
-- tax_amount: 세액/부가세/VAT
-- total_amount: 합계금액/총액
-- item_name: 대표 품목명/계약건명/견적 항목
-- remark: 비고/참고사항"""
+{fields_list}"""
+
+
+def _build_field_extraction_prompt(document_type: str) -> str:
+    """현재 스키마 기준으로 필드 목록이 반영된 프롬프트 반환."""
+    return _FIELD_EXTRACTION_RULES.format(
+        document_type=document_type,
+        fields_list=_build_field_list_section(),
+    )
+
+
+# 호환 목적: 기존 테스트/외부 import가 FIELD_EXTRACTION_PROMPT 이름을 참조할 수 있음.
+# rules + 현재 스키마 기반 필드 리스트로 한 번 생성해 모듈 상수로 노출.
+FIELD_EXTRACTION_PROMPT = _build_field_extraction_prompt("(use the document_type you classified above)")
 
 LINE_ITEMS_PROMPT = """\
 You are an expert Korean business document table extractor.
@@ -144,7 +210,7 @@ class OpenAIStructurer:
             DOCUMENT_TYPE_PROMPT
             + "\n\n"
             + "After classifying the document type, extract fields using the rules below.\n\n"
-            + FIELD_EXTRACTION_PROMPT.format(document_type="(use the document_type you classified above)")
+            + _build_field_extraction_prompt("(use the document_type you classified above)")
         )
 
         cache = get_default_cache()
@@ -247,7 +313,7 @@ class OpenAIStructurer:
             return []
 
         schema = self._field_extraction_schema()
-        prompt = FIELD_EXTRACTION_PROMPT.format(document_type=document_type)
+        prompt = _build_field_extraction_prompt(document_type)
 
         try:
             response = client.responses.create(
@@ -402,45 +468,40 @@ class OpenAIStructurer:
     # ── Schema Definitions ───────────────────────────────────────────
 
     def _combined_schema(self) -> dict[str, Any]:
-        field_schema = {
-            "type": "object",
-            "additionalProperties": False,
-            "properties": {
-                "field_name": {"type": "string"},
-                "value": {"type": "string"},
-                "confidence": {"type": "number"},
-            },
-            "required": ["field_name", "value", "confidence"],
-        }
+        # field_name을 스키마 전체 추출 가능 필드로 제한 → AI가 정의되지 않은 이름을 반환할 수 없음
         return {
             "type": "object",
             "additionalProperties": False,
             "properties": {
                 "document_type": {"type": "string"},
                 "classification_confidence": {"type": "number"},
-                "fields": {"type": "array", "items": field_schema},
+                "fields": {"type": "array", "items": self._field_item_schema()},
             },
             "required": ["document_type", "classification_confidence", "fields"],
         }
 
     def _field_extraction_schema(self) -> dict[str, Any]:
-        field_schema = {
-            "type": "object",
-            "additionalProperties": False,
-            "properties": {
-                "field_name": {"type": "string"},
-                "value": {"type": "string"},
-                "confidence": {"type": "number"},
-            },
-            "required": ["field_name", "value", "confidence"],
-        }
         return {
             "type": "object",
             "additionalProperties": False,
             "properties": {
-                "fields": {"type": "array", "items": field_schema},
+                "fields": {"type": "array", "items": self._field_item_schema()},
             },
             "required": ["fields"],
+        }
+
+    @staticmethod
+    def _field_item_schema() -> dict[str, Any]:
+        """Fields 배열의 각 원소 스키마. field_name은 스키마 기반 enum으로 제한."""
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "field_name": {"type": "string", "enum": _extractable_field_names()},
+                "value": {"type": "string"},
+                "confidence": {"type": "number"},
+            },
+            "required": ["field_name", "value", "confidence"],
         }
 
     def _line_items_schema(self) -> dict[str, Any]:

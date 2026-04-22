@@ -476,5 +476,89 @@
       "total_amount": "1,001,000",
       "remark": "스캔풍 거래명세서"
     }
+  },
+  {
+    "file_name": "sample_26_receipt_gas.pdf",
+    "lines": [
+      "신용카드 매출전표",
+      "가맹점명 SK주유소 강남점",
+      "사업자번호 214-01-12345",
+      "거래일시 2026-04-10 14:23",
+      "승인번호 30456789",
+      "카드번호 1234-56**-****-7890",
+      "품목 휘발유",
+      "공급가액 45,455",
+      "세액 4,545",
+      "합계 50,000"
+    ],
+    "expected": {
+      "document_type": "영수증",
+      "supplier_name": "SK주유소 강남점",
+      "supplier_biz_no": "214-01-12345",
+      "issue_date": "2026-04-10",
+      "transaction_time": "2026-04-10 14:23",
+      "approval_no": "30456789",
+      "card_number_masked": "1234-56**-****-7890",
+      "item_name": "휘발유",
+      "supply_amount": "45,455",
+      "tax_amount": "4,545",
+      "total_amount": "50,000"
+    }
+  },
+  {
+    "file_name": "sample_27_receipt_restaurant.pdf",
+    "lines": [
+      "현금영수증",
+      "가맹점 한옥식당",
+      "사업자번호 123-45-67890",
+      "거래일시 2026-04-15 19:45",
+      "승인번호 50123456",
+      "품목 한정식",
+      "공급가액 90,909",
+      "세액 9,091",
+      "봉사료 10,000",
+      "합계 110,000"
+    ],
+    "expected": {
+      "document_type": "영수증",
+      "supplier_name": "한옥식당",
+      "supplier_biz_no": "123-45-67890",
+      "issue_date": "2026-04-15",
+      "transaction_time": "2026-04-15 19:45",
+      "approval_no": "50123456",
+      "item_name": "한정식",
+      "supply_amount": "90,909",
+      "tax_amount": "9,091",
+      "service_charge": "10,000",
+      "total_amount": "110,000"
+    }
+  },
+  {
+    "file_name": "sample_28_receipt_convenience.pdf",
+    "lines": [
+      "간이영수증",
+      "가맹점명 GS25 역삼역점",
+      "사업자등록번호 220-81-12345",
+      "거래일시 2026-04-18 08:12",
+      "승인번호 11223344",
+      "카드번호 5432-10**-****-1234",
+      "품목 삼각김밥",
+      "공급가액 2,727",
+      "세액 273",
+      "합계 3,000"
+    ],
+    "expected": {
+      "document_type": "영수증",
+      "supplier_name": "GS25 역삼역점",
+      "supplier_biz_no": "220-81-12345",
+      "issue_date": "2026-04-18",
+      "transaction_time": "2026-04-18 08:12",
+      "approval_no": "11223344",
+      "card_number_masked": "5432-10**-****-1234",
+      "item_name": "삼각김밥",
+      "supply_amount": "2,727",
+      "tax_amount": "273",
+      "total_amount": "3,000"
+    }
   }
 ]

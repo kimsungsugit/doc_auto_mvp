@@ -42,6 +42,14 @@
    - 둘 다 저신뢰 → 높은 쪽 (tie는 AI) + warning
 5. 둘 다 공란 → 기본값 `전자세금계산서` + warning
 
+## AI 프롬프트/스키마 동적 생성 — `ai_structurer.py`
+
+- `FIELD_EXTRACTION_PROMPT`의 필드 목록은 **하드코딩 금지** — `_build_field_list_section()`이 `schema.COMMON_FIELDS ∪ TYPE_SPECIFIC_FIELDS.values()`에서 자동 생성
+- `_SYSTEM_FIELDS` 집합(`document_type`, `approval_status`, `confidence_score`)은 AI 추출 대상에서 제외 — 시스템이 직접 채우는 메타필드이기 때문
+- `_combined_schema` / `_field_extraction_schema`의 `field_name`에 `enum=_extractable_field_names()` 제약 — AI가 스키마에 없는 이름을 반환할 수 없음
+- **새 유형 추가 절차**: `schema.py`의 `TYPE_SPECIFIC_FIELDS`에 `(field_name, label, required)` 튜플 넣으면 끝. 프롬프트 필드 목록과 JSON Schema enum이 다음 호출부터 자동 반영
+- 유형별 라벨 hint(예: "영수증 전용")는 `ai_structurer._FIELD_HINTS` dict에서 관리 — 스키마엔 노출 안 하고 프롬프트에만 녹임
+
 ## AI 응답 캐시 — `ai_cache.py`
 
 - 키: `sha256(namespace + prompt_fingerprint + model + full_text)` — prompt 문자열 자체가 지문이므로 프롬프트 수정 시 자동 cache miss
