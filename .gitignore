@@ -26,3 +26,11 @@ reports/
 .vscode/
 .idea/
 *.swp
+
+# Per-user local settings (Claude Code machine-specific)
+.claude/settings.local.json
+.pytest-tmp/
+
+# 3rd-party binaries / traineddata — 설치는 README 가이드 참고, repo에 포함하지 않음
+tools/downloads/
+tools/tessdata/
