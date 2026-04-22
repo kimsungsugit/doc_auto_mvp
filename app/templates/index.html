@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문서 자동입력 도우미</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <h2>0. 운영 요약</h2>
+      <div id="ocr-health" class="status-box"></div>
+      <div id="ai-accuracy-stats" class="status-box"></div>
+      <div id="dashboard-cards" class="dashboard-grid"></div>
+      <div class="dashboard-split">
+        <div>
+          <h3>최근 문서</h3>
+          <table class="mini-table">
+            <thead>
+              <tr><th>파일명</th><th>상태</th><th>경고</th><th></th></tr>
+            </thead>
+            <tbody id="recent-documents"></tbody>
+          </table>
+        </div>
+        <div>
+          <h3>실패 문서</h3>
+          <table class="mini-table">
+            <thead>
+              <tr><th>파일명</th><th>상태</th><th>오류</th><th></th></tr>
+            </thead>
+            <tbody id="failed-documents"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <p class="eyebrow">VAT Invoice Automation MVP</p>
+      <h1>문서 자동입력 도우미</h1>
+      <p class="hero-copy">세금계산서, 거래명세서, 계약서, 견적서 PDF와 이미지 문서를 올리면 핵심 필드를 추출하고 검수 후 엑셀로 내보냅니다.</p>
+    </section>
+
+    <section class="panel">
+      <h2>1. 업로드</h2>
+      <form id="upload-form" class="stack">
+        <label class="label" for="uploaded_by">업로더</label>
+        <input id="uploaded_by" name="uploaded_by" value="demo-user">
+        <label class="label" for="file">문서 파일</label>
+        <input id="file" name="file" type="file" accept=".pdf,.png,.jpg,.jpeg" multiple>
+        <label class="inline-check">
+          <input id="auto-extract" type="checkbox" checked>
+          업로드 후 자동 추출
+        </label>
+        <button type="submit">업로드</button>
+      </form>
+      <div id="upload-status" class="status-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>2. 추출 결과</h2>
+        <div class="action-row">
+          <select id="reclassify-select" disabled title="문서 유형 수동 변경 + 재추출"></select>
+          <button id="reclassify-button" type="button" disabled>재분류 및 재추출</button>
+          <button id="extract-button" disabled>추출 실행</button>
+        </div>
+      </div>
+      <div id="document-meta" class="meta-row"></div>
+      <div id="document-overview" class="document-overview"></div>
+      <div id="review-guide" class="review-guide"></div>
+      <div id="warnings" class="warnings"></div>
+      <div id="field-group-sections" class="field-group-sections"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>3. 검수 및 다운로드</h2>
+        <div class="action-row">
+          <button id="review-button" disabled>검수 완료</button>
+          <button id="export-button" disabled>엑셀 생성</button>
+        </div>
+      </div>
+      <div id="download-area" class="status-box"></div>
+    </section>
+
+    <section class="panel">
+      <h2>4. 처리 로그</h2>
+      <pre id="log-box" class="log-box"></pre>
+    </section>
+
+    <section class="panel">
+      <h2>5. 문서 목록</h2>
+      <div class="action-row">
+        <input id="document-search" placeholder="문서명, 업로더, 값 검색">
+        <select id="status-filter">
+          <option value="">전체 상태</option>
+          <option value="Uploaded">Uploaded</option>
+          <option value="Needs Review">Needs Review</option>
+          <option value="Reviewed">Reviewed</option>
+          <option value="Exported">Exported</option>
+          <option value="Failed">Failed</option>
+        </select>
+        <select id="sort-filter">
+          <option value="uploaded_at_desc">최신순</option>
+          <option value="uploaded_at_asc">오래된순</option>
+          <option value="warning_desc">경고 많은순</option>
+          <option value="failed_first">실패 우선</option>
+        </select>
+        <button id="search-button" type="button">검색</button>
+        <button id="batch-extract-button" type="button">선택 문서 일괄 추출</button>
+        <button id="batch-review-button" type="button">선택 문서 일괄 검수</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="batch-select-all" title="선택 가능한 문서 전체 선택"></th>
+            <th>문서 ID</th>
+            <th>파일명</th>
+            <th>형식</th>
+            <th>업로더</th>
+            <th>상태</th>
+            <th>경고 수</th>
+            <th>품목 수</th>
+          </tr>
+        </thead>
+        <tbody id="documents-body"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

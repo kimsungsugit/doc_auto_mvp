@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문서 자동입력 도우미 비교표</title>
+  <style>
+    :root {
+      --bg: #efe7db;
+      --surface: rgba(255, 251, 245, 0.92);
+      --surface-alt: rgba(255, 255, 255, 0.72);
+      --line: rgba(58, 42, 22, 0.12);
+      --text: #1c1712;
+      --muted: #6d6256;
+      --accent: #0f766e;
+      --accent-soft: rgba(15, 118, 110, 0.12);
+      --shadow: 0 24px 56px rgba(30, 18, 10, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 24%),
+        linear-gradient(180deg, #faf6ef 0%, var(--bg) 100%);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
+
+    .hero,
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 32px;
+      min-height: 360px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 86% 18%, rgba(15, 118, 110, 0.16), transparent 28%),
+        linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(38px, 6vw, 64px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .lead {
+      margin-top: 18px;
+      max-width: 600px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .hero-card {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(58, 42, 22, 0.1);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-card h3 {
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .hero-card p,
+    .hero-card li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .hero-card ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+
+    .section {
+      margin-top: 24px;
+      padding: 28px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .section-head p {
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    h2 {
+      font-size: clamp(26px, 4vw, 42px);
+      letter-spacing: -0.04em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 22px;
+    }
+
+    th,
+    td {
+      padding: 16px 14px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(58, 42, 22, 0.08);
+    }
+
+    th {
+      background: rgba(246, 239, 227, 0.92);
+      font-size: 14px;
+    }
+
+    td {
+      background: rgba(255, 255, 255, 0.44);
+      line-height: 1.7;
+    }
+
+    .win {
+      background: var(--accent-soft);
+      color: #0a5f58;
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--surface-alt);
+      padding: 22px;
+    }
+
+    .panel h3 {
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .panel p,
+    .panel li {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .panel ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .quote {
+      margin-top: 20px;
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(15, 118, 110, 0.08);
+      border: 1px solid rgba(15, 118, 110, 0.12);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .button-primary {
+      color: white;
+      background: var(--accent);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 24px, 1120px);
+      }
+
+      .hero,
+      .section {
+        padding: 20px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Comparison Sheet</p>
+        <h1>왜 일반 ChatGPT 대신 문서 자동입력 도우미인가</h1>
+        <p class="lead">
+          일반 ChatGPT는 문서를 읽고 설명하는 데 강합니다.
+          문서 자동입력 도우미는 같은 문서를 같은 형식으로 반복 처리하고,
+          사람이 검수한 뒤 결과물을 남기는 데 강합니다.
+        </p>
+        <div class="actions">
+          <a class="button button-primary" href="intro_page.html">소개 페이지 보기</a>
+          <a class="button button-secondary" href="onepage_summary.html">1페이지 요약 보기</a>
+        </div>
+      </div>
+
+      <aside class="hero-card">
+        <h3>한 줄 차이</h3>
+        <p>
+          일반 ChatGPT가 문서를 이해하는 도구라면,
+          문서 자동입력 도우미는 반복 문서 입력 업무를 처리하는 도구입니다.
+        </p>
+        <ul>
+          <li>대화형 응답이 아니라 엑셀 결과물까지 생성</li>
+          <li>검수, 로그, 재처리 흐름 포함</li>
+          <li>운영 화면과 다건 처리 지원</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Direct Comparison</p>
+          <h2>실무 기준으로 보면 차이는 운영성에 있습니다</h2>
+        </div>
+        <p>
+          고객은 모델이 똑똑한지보다 결과가 같은 형식으로 반복 생성되는지,
+          사람이 통제할 수 있는지, 기록이 남는지를 더 봅니다.
+        </p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>일반 ChatGPT 문서 업로드</th>
+            <th>문서 자동입력 도우미</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>사용 목적</td>
+            <td>요약, 설명, 1회성 분석</td>
+            <td class="win">반복 입력 업무 자동화</td>
+          </tr>
+          <tr>
+            <td>출력 형식</td>
+            <td>대화형 응답 중심</td>
+            <td class="win">고정 필드 구조와 엑셀 결과물</td>
+          </tr>
+          <tr>
+            <td>검수 흐름</td>
+            <td>별도 없음</td>
+            <td class="win">경고 표시, 수정, 검수 완료 단계</td>
+          </tr>
+          <tr>
+            <td>이력 관리</td>
+            <td>대화 기록 의존</td>
+            <td class="win">로그, 수정 이력, 실패 재처리</td>
+          </tr>
+          <tr>
+            <td>엑셀 양식 반영</td>
+            <td>수동 복사/붙여넣기 필요</td>
+            <td class="win">지정 템플릿으로 바로 출력</td>
+          </tr>
+          <tr>
+            <td>다건 처리</td>
+            <td>비효율적</td>
+            <td class="win">단건 및 다건 업로드 가능</td>
+          </tr>
+          <tr>
+            <td>파일 형식</td>
+            <td>문서 읽기 중심</td>
+            <td class="win">PDF, PNG, JPG, JPEG 지원</td>
+          </tr>
+          <tr>
+            <td>실무 적합성</td>
+            <td>보조 도구</td>
+            <td class="win">업무 프로세스용 도구</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Practical Meaning</p>
+          <h2>이 차이가 실제로 의미하는 것</h2>
+        </div>
+        <p>
+          단발성 분석이 아니라, 입력 공정 자체를 줄이고 결과 형식을 고정하려는 업무에서는
+          전용 도구가 훨씬 유리합니다.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="panel">
+          <h3>일반 ChatGPT가 좋은 경우</h3>
+          <ul>
+            <li>처음 보는 문서를 빠르게 읽고 요약할 때</li>
+            <li>설명이나 해석, 자유로운 질의응답이 필요할 때</li>
+            <li>구축 없이 바로 시도해보고 싶을 때</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>문서 자동입력 도우미가 좋은 경우</h3>
+          <ul>
+            <li>같은 문서를 반복 입력하는 실무가 있을 때</li>
+            <li>엑셀 양식과 결과 형식이 고정되어야 할 때</li>
+            <li>검수, 로그, 실패 대응이 필요한 조직일 때</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>결론</h3>
+          <ul>
+            <li>분석 보조는 일반 ChatGPT로도 충분합니다</li>
+            <li>반복 입력 자동화는 전용 도구가 더 맞습니다</li>
+            <li>특히 세무와 행정 문서는 운영성이 핵심입니다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="quote">
+        고객은 “AI가 똑똑한가”보다 “같은 형식으로 반복 처리되고, 사람이 검수할 수 있는가”를 더 봅니다.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

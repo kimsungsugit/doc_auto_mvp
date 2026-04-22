@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문서 자동입력 도우미 소개</title>
+  <style>
+    :root {
+      --bg: #f2ebe0;
+      --surface: rgba(255, 251, 245, 0.88);
+      --surface-strong: #fffaf2;
+      --line: rgba(64, 48, 29, 0.12);
+      --text: #1d1812;
+      --muted: #6d6256;
+      --accent: #0f766e;
+      --accent-deep: #0b5f59;
+      --accent-soft: rgba(15, 118, 110, 0.12);
+      --warm: #b45309;
+      --shadow: 0 24px 60px rgba(30, 20, 10, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(15, 118, 110, 0.16), transparent 22%),
+        radial-gradient(circle at 86% 18%, rgba(180, 83, 9, 0.12), transparent 18%),
+        linear-gradient(180deg, #fbf7f0 0%, var(--bg) 100%);
+    }
+
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(251, 247, 240, 0.84);
+      border-bottom: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    .topbar-inner,
+    .content {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 70px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0f766e 0%, #124b47 100%);
+      color: white;
+      box-shadow: 0 12px 24px rgba(15, 118, 110, 0.24);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav a {
+      text-decoration: none;
+    }
+
+    .hero {
+      min-height: calc(100svh - 70px);
+      display: grid;
+      align-items: center;
+      padding: 42px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(44px, 7vw, 78px);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      max-width: 8ch;
+    }
+
+    .hero-copy {
+      margin-top: 22px;
+      max-width: 620px;
+      font-size: 19px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      color: white;
+      background: var(--accent);
+      box-shadow: 0 14px 28px rgba(15, 118, 110, 0.2);
+    }
+
+    .button-primary:hover {
+      background: var(--accent-deep);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.56);
+      border: 1px solid rgba(64, 48, 29, 0.12);
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(180deg, rgba(255, 250, 242, 0.98) 0%, rgba(244, 236, 224, 0.92) 100%);
+      box-shadow: var(--shadow);
+      min-height: 620px;
+      padding: 26px;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 28%),
+        linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.08) 100%);
+      pointer-events: none;
+    }
+
+    .panel-card {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(64, 48, 29, 0.08);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 16px 36px rgba(42, 29, 12, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .shot-card {
+      overflow: hidden;
+    }
+
+    .shot-frame {
+      position: relative;
+      aspect-ratio: 1.03 / 1;
+      overflow: hidden;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 225, 210, 0.92) 100%);
+    }
+
+    .shot-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .shot-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .dashboard {
+      padding: 20px;
+    }
+
+    .dashboard-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-head small,
+    .muted {
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--surface-strong);
+      border: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }
+
+    .flow {
+      margin-top: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0f766e 0%, #135853 100%);
+      color: white;
+      font-weight: 800;
+    }
+
+    .status {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-deep);
+    }
+
+    .status.warn { color: var(--warm); }
+
+    .content section {
+      padding: 84px 0 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .section-head p {
+      max-width: 640px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    h2 {
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: -0.04em;
+    }
+
+    .value-grid,
+    .feature-grid,
+    .audience-grid,
+    .proof-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .value-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .audience-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .proof-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      align-items: stretch;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .preview-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .preview-card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      border-bottom: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    .preview-copy {
+      padding: 18px 18px 20px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .result-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .result-list {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .score {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    .score strong {
+      display: block;
+      font-size: 30px;
+      letter-spacing: -0.05em;
+      color: var(--accent-deep);
+      margin-bottom: 4px;
+    }
+
+    .terminal {
+      border: 1px solid rgba(64, 48, 29, 0.12);
+      border-radius: 24px;
+      background: #15120f;
+      color: #f3eee6;
+      overflow: hidden;
+      box-shadow: 0 22px 40px rgba(15, 10, 5, 0.22);
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #f59e0b;
+    }
+
+    .dot:nth-child(2) { background: #ef4444; }
+    .dot:nth-child(3) { background: #10b981; }
+
+    .terminal-title {
+      margin-left: auto;
+      color: rgba(243, 238, 230, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .terminal-body {
+      padding: 18px 18px 20px;
+      font-family: "Consolas", "SFMono-Regular", monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .ok { color: #34d399; }
+    .note { color: #fcd34d; }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .panel h3 {
+      font-size: 24px;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .panel p,
+    .panel li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .metric {
+      font-size: 38px;
+      letter-spacing: -0.05em;
+      color: var(--accent-deep);
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .workflow-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .workflow-step {
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.66);
+      min-height: 180px;
+    }
+
+    .workflow-step strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .compare-shell {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 252, 247, 0.9);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 16px 18px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(64, 48, 29, 0.08);
+    }
+
+    th {
+      background: rgba(247, 240, 228, 0.92);
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    td strong {
+      color: var(--accent-deep);
+    }
+
+    .cta {
+      margin: 84px 0 96px;
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 32%),
+        linear-gradient(135deg, rgba(255, 251, 245, 0.94) 0%, rgba(244, 235, 220, 0.94) 100%);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 20px;
+    }
+
+    .cta ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .aside-card {
+      border: 1px solid rgba(64, 48, 29, 0.1);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 22px;
+    }
+
+    .micro {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .cta-grid,
+      .value-grid,
+      .audience-grid,
+      .workflow-strip,
+      .feature-grid,
+      .proof-grid,
+      .result-grid,
+      .scoreboard,
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        min-height: 62px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .content,
+      .topbar-inner {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .hero-panel,
+      .panel,
+      .cta {
+        padding: 20px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-row {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">DA</span>
+        <span>문서 자동입력 도우미</span>
+      </div>
+      <nav class="nav">
+        <a href="#value">가치</a>
+        <a href="#features">기능</a>
+        <a href="#workflow">처리 흐름</a>
+        <a href="#compare">비교</a>
+        <a href="#cta">문의</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="hero" id="top">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Document Automation Demo</p>
+          <h1>반복 문서 입력 업무를 검수 가능한 자동화로 전환합니다</h1>
+          <p class="hero-copy">
+            세금계산서와 거래명세서 PDF, 이미지 문서를 업로드하면 핵심 항목을 자동 추출하고,
+            사람이 필요한 부분만 확인한 뒤 지정 엑셀 양식으로 바로 출력합니다.
+            단발성 AI 체험이 아니라 반복 입력 업무에 맞춘 실무형 자동화 흐름입니다.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#cta">실문서 데모 제안 받기</a>
+            <a class="button button-secondary" href="comparison_page.html">비교표 보기</a>
+          </div>
+          <p class="hero-note">
+            지원 형식: PDF, PNG, JPG, JPEG / 단건 및 다건 업로드 / 검수, 로그, 재처리 포함
+          </p>
+        </div>
+
+        <div class="hero-panel">
+          <div class="panel-card shot-card">
+            <div class="shot-frame">
+              <img src="assets/app_home.png" alt="문서 자동입력 도우미 앱 홈 화면">
+            </div>
+            <div class="shot-caption">
+              <div>
+                <strong>실제 앱 화면</strong><br>
+                업로드, 대시보드, 문서 목록, 검수 흐름이 한 화면에서 이어집니다.
+              </div>
+              <span class="pill">Live Demo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="value">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Core Value</p>
+          <h2>이 도구가 해결하는 건 AI 체험이 아니라 입력 공정입니다</h2>
+        </div>
+        <p>
+          고객은 문서를 잘 이해하는 모델보다, 같은 형식으로 반복 처리되고 사람이 끝에서 통제할 수 있는 흐름을 원합니다.
+          이 페이지는 그 운영형 가치에 맞춰 정리되어 있습니다.
+        </p>
+      </div>
+
+      <div class="value-grid">
+        <article class="panel">
+          <div class="metric">입력 시간 절감</div>
+          <h3>PDF를 보고 옮겨 적는 시간을 줄입니다</h3>
+          <p>
+            공급자, 공급받는자, 작성일자, 금액, 품목 같은 반복 입력 항목을 자동 추출합니다.
+            사람은 모든 문서를 처음부터 읽지 않고 필요한 항목만 확인하면 됩니다.
+          </p>
+        </article>
+        <article class="panel">
+          <div class="metric">검수 가능한 자동화</div>
+          <h3>사람이 통제하는 구조라 실무에 맞습니다</h3>
+          <p>
+            신뢰도 낮은 필드를 표시하고, 수정 이력과 로그를 남기며, 검수 완료 전에는 최종 결과를 확정하지 않습니다.
+            자동화와 책임 추적이 함께 갑니다.
+          </p>
+        </article>
+        <article class="panel">
+          <div class="metric">엑셀 즉시 출력</div>
+          <h3>분석이 아니라 결과물 생성까지 이어집니다</h3>
+          <p>
+            대화형 응답으로 끝나는 것이 아니라 지정 엑셀 양식과 검수기록 시트까지 출력합니다.
+            바로 제출하거나 후속 업무에 연결할 수 있습니다.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Feature Scope</p>
+          <h2>첫 데모에서 바로 보여줄 수 있는 기능 범위</h2>
+        </div>
+        <p>
+          단순 업로드 데모가 아니라 운영 화면, 실패 재처리, 로그, 다건 처리까지 포함해
+          납품 가능한 자동화 도구처럼 보이도록 구성했습니다.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="panel">
+          <h3>문서 접수</h3>
+          <p>PDF, PNG, JPG, JPEG 형식을 지원하고 단건 및 다건 업로드가 가능합니다.</p>
+        </article>
+        <article class="panel">
+          <h3>문서 유형 감지</h3>
+          <p>전자세금계산서와 거래명세서를 구분하고 공통 필드와 문서별 필드를 추출합니다.</p>
+        </article>
+        <article class="panel">
+          <h3>OCR 및 구조화</h3>
+          <p>텍스트 PDF와 이미지 문서를 분기 처리하고, 날짜와 금액을 정규화합니다.</p>
+        </article>
+        <article class="panel">
+          <h3>검수와 로그</h3>
+          <p>신뢰도 낮은 필드를 표시하고 수정 이력, 처리 로그, 실패 문서 재처리를 지원합니다.</p>
+        </article>
+        <article class="panel">
+          <h3>엑셀 템플릿 출력</h3>
+          <p>요약 시트, 품목 시트, 검수기록 시트를 가진 템플릿 기반 결과물을 생성합니다.</p>
+        </article>
+        <article class="panel">
+          <h3>관리자 화면</h3>
+          <p>최근 문서, 실패 문서, 검색, 정렬, 상태 필터, 대시보드 지표를 제공합니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Workflow</p>
+          <h2>처리 흐름은 짧고 명확해야 설득됩니다</h2>
+        </div>
+        <p>
+          고객이 이해하기 쉬운 건 한 번의 업로드와 한 번의 결과입니다.
+          실제 업무에서는 그 사이에 OCR, 구조화, 검수, 내보내기, 이력 관리가 들어갑니다.
+        </p>
+      </div>
+
+      <div class="workflow-strip">
+        <article class="workflow-step">
+          <strong>01 Upload</strong>
+          문서를 받습니다. 파일 형식과 원본 확장자를 저장하고 처리 건을 생성합니다.
+        </article>
+        <article class="workflow-step">
+          <strong>02 Parse</strong>
+          텍스트 PDF는 파싱하고, 스캔/이미지는 OCR 경로로 보냅니다.
+        </article>
+        <article class="workflow-step">
+          <strong>03 Structure</strong>
+          핵심 필드와 품목 배열을 구조화하고 날짜, 사업자번호, 금액을 정리합니다.
+        </article>
+        <article class="workflow-step">
+          <strong>04 Review</strong>
+          사람이 경고 항목만 보고 수정하며, 재처리와 수정 이력을 관리합니다.
+        </article>
+        <article class="workflow-step">
+          <strong>05 Export</strong>
+          지정 엑셀 양식으로 결과를 출력하고 기록을 남깁니다.
+        </article>
+      </div>
+    </section>
+
+    <section id="compare">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Why Not Plain Chat</p>
+          <h2>일반 ChatGPT와의 차이는 분석이 아니라 운영성입니다</h2>
+        </div>
+        <p>
+          일반 ChatGPT는 문서를 읽고 설명하는 데 강합니다.
+          이 도구는 반복 문서 입력 업무를 같은 형식으로 처리하고 결과물을 남기는 데 강합니다.
+        </p>
+      </div>
+
+      <div class="compare-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>항목</th>
+              <th>일반 ChatGPT 문서 업로드</th>
+              <th>문서 자동입력 도우미</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>목적</td>
+              <td>요약, 설명, 1회성 분석</td>
+              <td><strong>반복 입력 업무 자동화</strong></td>
+            </tr>
+            <tr>
+              <td>출력 형식</td>
+              <td>대화형 응답 중심</td>
+              <td><strong>고정 필드 구조와 엑셀 결과물</strong></td>
+            </tr>
+            <tr>
+              <td>검수 흐름</td>
+              <td>별도 없음</td>
+              <td><strong>경고 표시, 수정, 검수 완료 단계</strong></td>
+            </tr>
+            <tr>
+              <td>이력 관리</td>
+              <td>대화 기록 의존</td>
+              <td><strong>로그, 수정 이력, 실패 재처리</strong></td>
+            </tr>
+            <tr>
+              <td>다건 처리</td>
+              <td>비효율적</td>
+              <td><strong>단건 및 다건 업로드 지원</strong></td>
+            </tr>
+            <tr>
+              <td>실무 적합성</td>
+              <td>보조 도구</td>
+              <td><strong>업무 프로세스용 도구</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Verification</p>
+          <h2>실제 테스트 결과도 자료 안에서 바로 보이게 구성했습니다</h2>
+        </div>
+        <p>
+          소개 자료에 적힌 숫자는 설명용 문구가 아니라 현재 저장소에서 생성한 실제 결과를 기반으로 정리한 값입니다.
+          샘플 평가, 데모 실행, 제출 PDF 생성 결과를 같은 페이지 안에서 보여줍니다.
+        </p>
+      </div>
+
+      <div class="result-grid">
+        <article class="panel">
+          <h3>검증 요약</h3>
+          <div class="scoreboard">
+            <div class="score">
+              <strong>95/95</strong>
+              <span class="muted">샘플 필드 평가 통과</span>
+            </div>
+            <div class="score">
+              <strong>25</strong>
+              <span class="muted">샘플 문서 세트</span>
+            </div>
+            <div class="score">
+              <strong>16</strong>
+              <span class="muted">통합 제출본 페이지 수</span>
+            </div>
+          </div>
+          <ul class="result-list">
+            <li>샘플 기준 rule-only 평가: 95/95, ratio 1.0</li>
+            <li>실제 데모 실행 문서: sample_19_statement_type.pdf</li>
+            <li>감지 문서 유형: 거래명세서</li>
+            <li>핵심 추출값: 코어시스템 / 리드상사 / 363,000 / 서버 유지관리</li>
+            <li>엑셀 결과 파일: 124d234f42d3.xlsx 생성 확인</li>
+          </ul>
+        </article>
+
+        <div class="result-stack">
+          <article class="terminal">
+            <div class="terminal-top">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="terminal-title">sample evaluation</span>
+            </div>
+            <div class="terminal-body">mode: rule-only
+matched: <span class="ok">95</span>
+total: <span class="ok">95</span>
+ratio: <span class="ok">1.0</span>
+
+last verified sample:
+sample_19_statement_type.pdf
+document_type=<span class="ok">거래명세서</span></div>
+          </article>
+
+          <article class="terminal">
+            <div class="terminal-top">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="terminal-title">demo run</span>
+            </div>
+            <div class="terminal-body">document_id: 124d234f42d3
+supplier_name: <span class="ok">코어시스템</span>
+buyer_name: <span class="ok">리드상사</span>
+total_amount: <span class="ok">363,000</span>
+item_name: <span class="ok">서버 유지관리</span>
+excel_output: <span class="ok">124d234f42d3.xlsx</span>
+bundle_pages: <span class="note">16</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Proof</p>
+          <h2>소개 자료가 아니라 실제 화면이 이미 있는 상태입니다</h2>
+        </div>
+        <p>
+          현재 데모는 말로만 설명하는 수준이 아니라 업로드 화면과 관리자 흐름을 실제로 보여줄 수 있습니다.
+          제안 단계에서 이 화면 한 장이 신뢰도를 크게 올립니다.
+        </p>
+      </div>
+
+      <div class="proof-grid">
+        <article class="panel shot-card">
+          <div class="shot-frame">
+            <img src="assets/app_home.png" alt="문서 자동입력 도우미 관리자 화면 캡처">
+          </div>
+          <div class="shot-caption">
+            <div>
+              <strong>앱 홈 및 관리자 화면</strong><br>
+              업로드, 상태 요약, 최근 문서, 실패 문서, 검색 흐름을 바로 보여줄 수 있습니다.
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3>이 화면으로 바로 설명할 수 있는 것</h3>
+          <p>
+            고객은 문서를 올리고 결과가 나오는 흐름을 짧게 확인하고 싶어합니다.
+            이 캡처는 “도구가 이미 동작한다”는 신호로 작동합니다.
+          </p>
+          <div class="flow">
+            <div class="flow-row">
+              <span class="step-badge">A</span>
+              <div>
+                <strong>문서 업로드</strong><br>
+                PDF와 이미지 입력 지원
+              </div>
+              <span class="status">Input</span>
+            </div>
+            <div class="flow-row">
+              <span class="step-badge">B</span>
+              <div>
+                <strong>운영 대시보드</strong><br>
+                최근 문서, 실패 문서, 상태 요약
+              </div>
+              <span class="status">Ops</span>
+            </div>
+            <div class="flow-row">
+              <span class="step-badge">C</span>
+              <div>
+                <strong>검수 후 엑셀 출력</strong><br>
+                수동 수정과 최종 결과물 생성
+              </div>
+              <span class="status">Output</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Sample Pack</p>
+          <h2>공개 양식 기반 샘플도 실제로 보여줄 수 있게 준비했습니다</h2>
+        </div>
+        <p>
+          실제 고객 문서가 없을 때도 레이아웃 편차를 설명할 수 있도록 박스형 양식, 스캔풍 세금계산서,
+          스캔풍 거래명세서 샘플을 시각 자료로 함께 넣었습니다.
+        </p>
+      </div>
+
+      <div class="preview-grid">
+        <article class="panel preview-card">
+          <img src="assets/sample_20_preview.png" alt="공개 양식형 영수 세금계산서 샘플">
+          <div class="preview-copy">
+            <h3>공개 양식형 영수 세금계산서</h3>
+            <p>박스형 배치와 영수 표기를 가진 양식형 문서를 합성해 레이아웃 편차를 테스트합니다.</p>
+          </div>
+        </article>
+        <article class="panel preview-card">
+          <img src="assets/sample_24_preview.png" alt="스캔풍 세금계산서 샘플">
+          <div class="preview-copy">
+            <h3>스캔풍 세금계산서</h3>
+            <p>배경 노이즈와 미세 기울기를 넣어 OCR 전제 문서처럼 보이도록 만든 샘플입니다.</p>
+          </div>
+        </article>
+        <article class="panel preview-card">
+          <img src="assets/sample_25_preview.png" alt="스캔풍 거래명세서 샘플">
+          <div class="preview-copy">
+            <h3>스캔풍 거래명세서</h3>
+            <p>거래명세서 유형까지 포함해 실문서 직전 단계의 데모 범위를 넓혀둔 상태입니다.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Target Audience</p>
+          <h2>누가 가장 먼저 도입하기 좋은가</h2>
+        </div>
+        <p>
+          세무와 행정 문서처럼 입력 형식은 반복되지만 사람이 최종 검수해야 하는 조직에 가장 잘 맞습니다.
+        </p>
+      </div>
+
+      <div class="audience-grid">
+        <article class="panel">
+          <h3>세무사무소</h3>
+          <p>세금계산서, 증빙, 거래명세서 등 반복 입력과 엑셀 정리 비중이 높은 곳</p>
+        </article>
+        <article class="panel">
+          <h3>회계/경리 팀</h3>
+          <p>문서를 받아 회계 시스템이나 내부 양식으로 옮겨 적는 업무가 많은 팀</p>
+        </article>
+        <article class="panel">
+          <h3>문서 자동화 외주 수요 기업</h3>
+          <p>막연한 AI보다 작고 빠르게 도입 가능한 자동화 도구를 원하는 조직</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta" id="cta">
+      <div class="cta-grid">
+        <div>
+          <p class="eyebrow">Next Step</p>
+          <h2>실문서 2~3건이면 마지막 튜닝 단계로 바로 넘어갈 수 있습니다</h2>
+          <ul>
+            <li>비식별 실제 PDF 2~3건으로 정확도 보정</li>
+            <li>실제 고객 엑셀 양식 1개로 셀 매핑 확정</li>
+            <li>스캔본이 있으면 OCR 품질까지 함께 검증</li>
+          </ul>
+        </div>
+        <aside class="aside-card">
+          <h3>데모 제안 문구</h3>
+          <p class="micro">
+            세무·행정 문서에서 반복 입력하는 작업을 자동화해드립니다.
+            PDF와 이미지 문서를 업로드하면 주요 항목을 자동 추출하고,
+            검수 후 지정 엑셀 양식으로 바로 출력하는 방식입니다.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="onepage_summary.html">1페이지 요약 보기</a>
+            <a class="button button-secondary" href="comparison_page.html">비교표 보기</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

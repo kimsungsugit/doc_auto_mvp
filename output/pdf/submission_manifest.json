@@ -1,0 +1,20 @@
+{
+  "output_dir": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf",
+  "files": [
+    {
+      "name": "doc_auto_intro.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_intro.pdf",
+      "size_bytes": 2134950
+    },
+    {
+      "name": "doc_auto_comparison.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_comparison.pdf",
+      "size_bytes": 732065
+    },
+    {
+      "name": "doc_auto_onepage_summary.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_onepage_summary.pdf",
+      "size_bytes": 1065034
+    }
+  ]
+}

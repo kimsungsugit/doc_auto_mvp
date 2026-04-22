@@ -1,0 +1,74 @@
+[project]
+name = "doc-auto-mvp"
+version = "0.1.0"
+description = "VAT invoice PDF auto-entry assistant MVP"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "httpx>=0.28.0",
+    "jinja2>=3.1.4",
+    "openai>=1.99.0",
+    "openpyxl>=3.1.5",
+    "pydantic>=2.9.0",
+    "pypdf>=5.0.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.12",
+    "reportlab>=4.2.0",
+    "slowapi>=0.1.9",
+    "uvicorn>=0.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py312"
+exclude = ["build", "dist", ".venv*", "doc_auto_mvp.egg-info", "storage"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]
+
+[tool.pyright]
+include = ["app", "tests"]
+exclude = ["build", "dist", ".venv*", "doc_auto_mvp.egg-info", "storage", "**/__pycache__"]
+pythonVersion = "3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+norecursedirs = ["build", "dist", ".venv*", "doc_auto_mvp.egg-info", "storage"]
+filterwarnings = [
+    "ignore::DeprecationWarning:pydantic.*",
+]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = [
+    "app/__init__.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+skip_covered = false

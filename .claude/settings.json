@@ -1,0 +1,66 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(python -m pytest*)",
+      "Bash(python -m uvicorn*)",
+      "Bash(python -m ruff*)",
+      "Bash(python -m py_compile*)",
+      "Bash(python scripts/*)",
+      "Bash(pip install*)",
+      "Bash(python -m pip install*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(ls*)",
+      "Bash(mkdir*)"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PY=${PYTHON_CMD:-C:/Project/데모/doc-auto-mvp/.venv-ai/Scripts/python.exe}; RUFF=${RUFF_CMD:-C:/Project/데모/doc-auto-mvp/.venv-ai/Scripts/ruff.exe}; FILE=$($PY -c \"import json, os; print(json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}')).get('file_path',''))\"); [ -n \"$FILE\" ] && [[ \"$FILE\" == *.py ]] && { if [ -x \"$RUFF\" ]; then \"$RUFF\" check \"$FILE\" 2>&1 | tail -15; else $PY -m py_compile \"$FILE\" 2>&1; fi; } || true",
+            "timeout": 15000
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PY=${PYTHON_CMD:-C:/Project/데모/doc-auto-mvp/.venv-ai/Scripts/python.exe}; CMD=$($PY -c \"import json, os; print(json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}')).get('command',''))\"); if echo \"$CMD\" | grep -q 'git commit'; then if [ \"$SKIP_PRECOMMIT_TESTS\" = \"1\" ]; then echo 'SKIP_PRECOMMIT_TESTS=1, skipping tests'; exit 0; fi; $PY -m pytest tests/ -x -q --no-header 2>&1 | tail -20; fi",
+            "timeout": 120000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/Project/데모/doc-auto-mvp/.claude/hooks/stop_check.sh\"",
+            "timeout": 180000
+          }
+        ]
+      }
+    ]
+  }
+}

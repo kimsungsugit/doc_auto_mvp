@@ -1,0 +1,28 @@
+# Secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Storage (runtime data)
+storage/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv*/
+build/
+dist/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+reports/
+
+# IDE
+.vscode/
+.idea/
+*.swp

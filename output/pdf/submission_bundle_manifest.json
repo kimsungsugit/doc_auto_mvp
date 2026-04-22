@@ -1,0 +1,36 @@
+{
+  "bundle": {
+    "name": "doc_auto_submission_bundle.pdf",
+    "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_submission_bundle.pdf",
+    "size_bytes": 4130750,
+    "page_count": 22
+  },
+  "order": [
+    "doc_auto_submission_cover.pdf",
+    "doc_auto_intro.pdf",
+    "doc_auto_comparison.pdf",
+    "doc_auto_onepage_summary.pdf"
+  ],
+  "inputs": [
+    {
+      "name": "doc_auto_submission_cover.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_submission_cover.pdf",
+      "size_bytes": 256777
+    },
+    {
+      "name": "doc_auto_intro.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_intro.pdf",
+      "size_bytes": 2134950
+    },
+    {
+      "name": "doc_auto_comparison.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_comparison.pdf",
+      "size_bytes": 732066
+    },
+    {
+      "name": "doc_auto_onepage_summary.pdf",
+      "path": "C:\\Project\\데모\\doc-auto-mvp\\output\\pdf\\doc_auto_onepage_summary.pdf",
+      "size_bytes": 1064612
+    }
+  ]
+}

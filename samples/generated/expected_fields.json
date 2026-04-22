@@ -1,0 +1,147 @@
+{
+  "sample_01_basic_inline.pdf": {
+    "issue_date": "2026-04-01",
+    "supplier_name": "새봄상사",
+    "buyer_name": "다온테크",
+    "supply_amount": "100,000",
+    "tax_amount": "10,000",
+    "total_amount": "110,000"
+  },
+  "sample_02_colon_layout.pdf": {
+    "issue_date": "2026-04-02",
+    "supplier_name": "미래솔루션",
+    "buyer_name": "리버시스템",
+    "remark": "4월 유지보수"
+  },
+  "sample_03_dense_amount_line.pdf": {
+    "supply_amount": "300,000",
+    "tax_amount": "30,000",
+    "total_amount": "330,000",
+    "item_name": "클라우드 서비스"
+  },
+  "sample_04_spacing_variant.pdf": {
+    "supplier_name": "알파비즈",
+    "buyer_name": "하나유통",
+    "total_amount": "1,320,000"
+  },
+  "sample_05_long_item.pdf": {
+    "item_name": "보안 모니터링 구독료",
+    "supplier_name": "세이프시스템"
+  },
+  "sample_06_buyer_optional_missing.pdf": {
+    "supplier_name": "데이터웍스",
+    "buyer_name": "푸른물류"
+  },
+  "sample_07_high_amount.pdf": {
+    "supply_amount": "9,900,000",
+    "tax_amount": "990,000",
+    "total_amount": "10,890,000"
+  },
+  "sample_08_remark_case.pdf": {
+    "remark": "선급금 정산분",
+    "total_amount": "737,000"
+  },
+  "sample_09_compact_party_line.pdf": {
+    "supplier_biz_no": "117-17-17017",
+    "buyer_biz_no": "218-18-18018"
+  },
+  "sample_10_service_case.pdf": {
+    "item_name": "회계 자문 서비스",
+    "remark": "반기 자문"
+  },
+  "sample_11_typo_labels.pdf": {
+    "supplier_name": "네오소프트",
+    "buyer_name": "한결유통",
+    "supply_amount": "410,000"
+  },
+  "sample_12_english_labels.pdf": {
+    "issue_date": "2026-04-12",
+    "supplier_name": "브라이트랩",
+    "buyer_name": "도담상사",
+    "supply_amount": "520,000",
+    "tax_amount": "52,000",
+    "total_amount": "572,000"
+  },
+  "sample_13_semantic_labels.pdf": {
+    "issue_date": "2026-04-13",
+    "supplier_name": "씨에스랩",
+    "buyer_name": "도담유통",
+    "supply_amount": "610000",
+    "tax_amount": "61000",
+    "total_amount": "671000"
+  },
+  "sample_14_amount_order_trap.pdf": {
+    "supplier_name": "누리시스템",
+    "buyer_name": "새봄상사",
+    "supply_amount": "500,000",
+    "tax_amount": "50,000",
+    "total_amount": "550,000"
+  },
+  "sample_15_service_synonym.pdf": {
+    "item_name": "보안 점검 정기권",
+    "remark": "메일 발송분"
+  },
+  "sample_16_multi_item_labeled.pdf": {
+    "supplier_name": "하늘시스템",
+    "buyer_name": "도약물산",
+    "total_amount": "462,000"
+  },
+  "sample_17_multi_item_tableish.pdf": {
+    "item_name": "백업 구독 서비스",
+    "remark": "2건 일괄 청구",
+    "total_amount": "803,000"
+  },
+  "sample_18_ocr_noisy_multi_item.pdf": {
+    "supplier_name": "넥스트랩",
+    "buyer_name": "한빛유통",
+    "total_amount": "891,000",
+    "remark": "OCR 보정 대상"
+  },
+  "sample_19_statement_type.pdf": {
+    "document_type": "거래명세서",
+    "supplier_name": "코어시스템",
+    "buyer_name": "리드상사",
+    "total_amount": "363,000"
+  },
+  "sample_20_public_form_receipt.pdf": {
+    "issue_date": "2026-04-20",
+    "supplier_name": "미래정밀",
+    "buyer_name": "한빛상사",
+    "total_amount": "528,000",
+    "remark": "영수 처리"
+  },
+  "sample_21_public_box_layout.pdf": {
+    "issue_date": "2026-04-21",
+    "supplier_name": "선우시스템",
+    "buyer_name": "다온물산",
+    "item_name": "백업 서버 임대",
+    "total_amount": "1,155,000"
+  },
+  "sample_22_modified_invoice_reason.pdf": {
+    "supplier_name": "이음랩",
+    "buyer_name": "더원유통",
+    "item_name": "보안 점검 서비스",
+    "remark": "수정발급 사유 단가 정정"
+  },
+  "sample_23_public_footer_notice.pdf": {
+    "issue_date": "2026-04-23",
+    "supplier_name": "서진테크",
+    "buyer_name": "에이스상사",
+    "total_amount": "792000",
+    "remark": "승인번호 20260423-11"
+  },
+  "sample_24_scan_style_invoice.pdf": {
+    "issue_date": "2026-04-24",
+    "supplier_name": "뉴웨이브",
+    "buyer_name": "시온상사",
+    "total_amount": "429,000",
+    "remark": "스캔본 가정 샘플"
+  },
+  "sample_25_scan_style_statement.pdf": {
+    "document_type": "거래명세서",
+    "supplier_name": "유니포트",
+    "buyer_name": "비전유통",
+    "total_amount": "1,001,000",
+    "remark": "스캔풍 거래명세서"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "include": ["app"],
+  "venvPath": ".",
+  "venv": ".venv-ai"
+}

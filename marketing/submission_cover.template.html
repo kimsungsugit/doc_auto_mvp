@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{document_title}</title>
+  <style>
+    :root {{
+      --ink: #1d1812;
+      --muted: #6e6357;
+      --accent: #0f766e;
+      --paper: #fbf7f0;
+      --line: rgba(59, 44, 26, 0.14);
+    }}
+
+    * {{ box-sizing: border-box; }}
+
+    html, body {{
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Pretendard", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 22%),
+        linear-gradient(180deg, #fdfaf4 0%, #efe6da 100%);
+    }}
+
+    .page {{
+      min-height: 100vh;
+      padding: 54px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }}
+
+    .frame {{
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background: rgba(255, 252, 246, 0.82);
+      padding: 44px;
+      box-shadow: 0 28px 64px rgba(32, 20, 10, 0.08);
+      backdrop-filter: blur(10px);
+    }}
+
+    .eyebrow {{
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }}
+
+    h1, h2, p {{ margin: 0; }}
+
+    h1 {{
+      font-size: 72px;
+      line-height: 0.94;
+      letter-spacing: -0.06em;
+      max-width: 8ch;
+    }}
+
+    .lead {{
+      margin-top: 26px;
+      max-width: 720px;
+      font-size: 21px;
+      line-height: 1.8;
+      color: var(--muted);
+    }}
+
+    .meta {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }}
+
+    .meta-box {{
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.6);
+    }}
+
+    .meta-box strong {{
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }}
+
+    .meta-box span {{
+      color: var(--muted);
+      line-height: 1.7;
+    }}
+
+    .footer {{
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="frame">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{product_name}</h1>
+      <p class="lead">{lead}</p>
+
+      <div class="meta">
+        <article class="meta-box">
+          <strong>{box1_title}</strong>
+          <span>{box1_body}</span>
+        </article>
+        <article class="meta-box">
+          <strong>{box2_title}</strong>
+          <span>{box2_body}</span>
+        </article>
+        <article class="meta-box">
+          <strong>{box3_title}</strong>
+          <span>{box3_body}</span>
+        </article>
+      </div>
+
+      <div class="footer">
+        <div>{footer_left}</div>
+        <div>{footer_right}</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문서 자동입력 도우미 통합 제안서</title>
+  <style>
+    :root {
+      --ink: #1d1812;
+      --muted: #6e6357;
+      --accent: #0f766e;
+      --paper: #fbf7f0;
+      --line: rgba(59, 44, 26, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Pretendard", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 22%),
+        linear-gradient(180deg, #fdfaf4 0%, #efe6da 100%);
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 54px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .frame {
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background: rgba(255, 252, 246, 0.82);
+      padding: 44px;
+      box-shadow: 0 28px 64px rgba(32, 20, 10, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      font-size: 72px;
+      line-height: 0.94;
+      letter-spacing: -0.06em;
+      max-width: 8ch;
+    }
+
+    .lead {
+      margin-top: 26px;
+      max-width: 720px;
+      font-size: 21px;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .meta-box {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .meta-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .meta-box span {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="frame">
+      <p class="eyebrow">Submission Deck</p>
+      <h1>문서 자동입력 도우미</h1>
+      <p class="lead">세금계산서와 거래명세서 같은 반복 문서를 자동 추출하고, 검수 후 지정 엑셀 양식으로 출력하는 실무형 문서 자동화 도구 제안서입니다.</p>
+
+      <div class="meta">
+        <article class="meta-box">
+          <strong>문서 구성</strong>
+          <span>소개 페이지, 비교표, 1페이지 요약본을 하나의 제출 파일로 묶었습니다.</span>
+        </article>
+        <article class="meta-box">
+          <strong>현재 상태</strong>
+          <span>샘플 문서 19건, 평가 66/66, 실제 데모 실행 확인 기준으로 정리되었습니다.</span>
+        </article>
+        <article class="meta-box">
+          <strong>다음 단계</strong>
+          <span>비식별 실제 PDF 2~3건과 고객 엑셀 양식 1개가 들어오면 마지막 튜닝으로 이어집니다.</span>
+        </article>
+      </div>
+
+      <div class="footer">
+        <div>문서 자동입력 도우미 통합 제안서</div>
+        <div>Generated on 2026-04-07</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

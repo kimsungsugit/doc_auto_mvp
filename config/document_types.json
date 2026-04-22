@@ -1,0 +1,196 @@
+{
+  "전자세금계산서": {
+    "field_overrides": {},
+    "field_groups": [
+      ["기본 정보", ["document_type", "issue_date", "approval_status", "confidence_score"]],
+      ["거래 주체", ["supplier_name", "supplier_biz_no", "buyer_name", "buyer_biz_no"]],
+      ["금액 정보", ["supply_amount", "tax_amount", "total_amount"]],
+      ["품목 및 비고", ["item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "문서 자동입력 결과",
+      "A3": "문서 유형", "E3": "작성일자",
+      "A6": "공급자명", "E6": "공급자 사업자번호",
+      "A8": "공급받는자명", "E8": "공급받는자 사업자번호",
+      "A10": "비고",
+      "A14": "공급가액", "C14": "세액", "E14": "합계금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "공급가액 + 세액 = 합계금액", "국세청 발행본과 금액 일치 여부 확인"],
+      ["검수 우선순위", "사업자번호 / 거래상대 / 승인상태", "누락 시 검수 단계에서 보정"]
+    ],
+    "item_headers": {
+      "A2": "항목", "B2": "규격", "C2": "수량", "D2": "단가", "E2": "공급가액", "F2": "세액"
+    },
+    "item_sheet_title": "품목내역"
+  },
+  "거래명세서": {
+    "field_overrides": {
+      "issue_date": ["거래일자", true],
+      "supplier_biz_no": ["공급자 사업자번호", false],
+      "item_name": ["품목코드/품목명", false]
+    },
+    "field_groups": [
+      ["기본 정보", ["document_type", "issue_date", "approval_status", "confidence_score"]],
+      ["거래 주체", ["supplier_name", "buyer_name", "supplier_biz_no", "buyer_biz_no"]],
+      ["금액 정보", ["supply_amount", "tax_amount", "total_amount"]],
+      ["품목 및 비고", ["item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "거래명세서 자동입력 결과",
+      "A3": "문서 유형", "E3": "거래일자",
+      "A6": "발행사", "E6": "발행사 사업자번호",
+      "A8": "거래처", "E8": "거래처 사업자번호",
+      "A10": "비고 / 결제메모",
+      "A14": "공급가액", "C14": "세액", "E14": "합계금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "거래처 / 품목코드 / 합계금액", "표 하단 합계와 품목행 비교"],
+      ["검수 우선순위", "품목명 / 수량 / 단가", "표 구조가 깨지면 대표 품목부터 확인"]
+    ],
+    "item_headers": {
+      "A2": "품목코드/품목", "B2": "규격", "C2": "수량", "D2": "단가", "E2": "공급가액", "F2": "세액"
+    },
+    "item_sheet_title": "거래품목"
+  },
+  "외부용역계약서": {
+    "field_overrides": {
+      "issue_date": ["계약일자", true],
+      "supplier_biz_no": ["공급자 사업자번호", false],
+      "buyer_biz_no": ["상대방 사업자번호", false],
+      "supply_amount": ["계약금액", true],
+      "tax_amount": ["세액", false],
+      "total_amount": ["계약금액", true],
+      "item_name": ["계약건명", false]
+    },
+    "field_groups": [
+      ["계약 정보", ["document_type", "issue_date", "approval_status", "confidence_score"]],
+      ["계약 당사자", ["supplier_name", "buyer_name", "supplier_biz_no", "buyer_biz_no"]],
+      ["계약 금액", ["supply_amount", "tax_amount", "total_amount"]],
+      ["계약 내용", ["item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "외부용역계약서 자동입력 결과",
+      "A3": "문서 유형", "E3": "계약일자",
+      "A6": "발주사", "E6": "발주사 사업자번호",
+      "A8": "수행사", "E8": "수행사 사업자번호",
+      "A10": "계약 메모",
+      "A14": "계약금액", "C14": "부가세", "E14": "총 계약금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "계약 당사자 / 계약금액 / 계약건명", "계약 본문과 제목 블록을 함께 확인"],
+      ["검수 우선순위", "계약일자 / 상대방 / 계약금액", "특수조건은 비고에 반영"]
+    ],
+    "item_headers": {
+      "A2": "계약 항목", "B2": "세부 범위", "C2": "차수", "D2": "단가", "E2": "계약 금액", "F2": "부가세"
+    },
+    "item_sheet_title": "계약범위"
+  },
+  "개발용역견적서": {
+    "field_overrides": {
+      "issue_date": ["견적일자", true],
+      "supplier_biz_no": ["발행업체 사업자번호", false],
+      "buyer_biz_no": ["수신처 사업자번호", false],
+      "tax_amount": ["세액", false],
+      "item_name": ["견적 항목", false],
+      "remark": ["결제조건/비고", false]
+    },
+    "field_groups": [
+      ["견적 정보", ["document_type", "issue_date", "approval_status", "confidence_score"]],
+      ["발행 및 수신", ["supplier_name", "buyer_name", "supplier_biz_no", "buyer_biz_no"]],
+      ["견적 금액", ["supply_amount", "tax_amount", "total_amount"]],
+      ["견적 항목", ["item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "개발용역견적서 자동입력 결과",
+      "A3": "문서 유형", "E3": "견적일자",
+      "A6": "발행 업체", "E6": "발행 업체 사업자번호",
+      "A8": "수신처", "E8": "수신처 사업자번호",
+      "A10": "결제조건 / 비고",
+      "A14": "견적금액", "C14": "부가세", "E14": "총 견적금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "발행 업체 / 수신처 / 견적총액", "견적 제목과 총액 블록을 우선 확인"],
+      ["검수 우선순위", "견적 항목 / 결제조건", "장문 제목은 잘림 없이 검수"]
+    ],
+    "item_headers": {
+      "A2": "견적 항목", "B2": "세부 범위", "C2": "수량", "D2": "단가", "E2": "견적 금액", "F2": "부가세"
+    },
+    "item_sheet_title": "견적항목"
+  },
+  "일반견적서": {
+    "field_overrides": {
+      "issue_date": ["견적일자", true],
+      "supplier_biz_no": ["발행업체 사업자번호", false],
+      "buyer_biz_no": ["수신처 사업자번호", false],
+      "tax_amount": ["세액", false],
+      "item_name": ["견적 항목", false],
+      "remark": ["결제조건/비고", false]
+    },
+    "field_groups": [
+      ["견적 정보", ["document_type", "issue_date", "approval_status", "confidence_score"]],
+      ["발행 및 수신", ["supplier_name", "buyer_name", "supplier_biz_no", "buyer_biz_no"]],
+      ["견적 금액", ["supply_amount", "tax_amount", "total_amount"]],
+      ["견적 항목", ["item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "견적서 자동입력 결과",
+      "A3": "문서 유형", "E3": "견적일자",
+      "A6": "발행 업체", "E6": "발행 업체 사업자번호",
+      "A8": "수신처", "E8": "수신처 사업자번호",
+      "A10": "결제조건 / 비고",
+      "A14": "견적금액", "C14": "부가세", "E14": "총 견적금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "발행 업체 / 수신처 / 최종 견적가", "Quotation 영역과 NOTICE를 함께 확인"],
+      ["검수 우선순위", "견적 항목 / 수신처 노이즈", "수신처 앞뒤 문자 노이즈 제거"]
+    ],
+    "item_headers": {
+      "A2": "견적 항목", "B2": "세부 내용", "C2": "수량", "D2": "단가", "E2": "견적 금액", "F2": "부가세"
+    },
+    "item_sheet_title": "견적항목"
+  },
+  "영수증": {
+    "field_overrides": {
+      "issue_date": ["거래일자", true],
+      "supplier_name": ["가맹점명", true],
+      "supplier_biz_no": ["가맹점 사업자번호", false],
+      "buyer_name": ["고객명", false],
+      "buyer_biz_no": ["고객 사업자번호", false],
+      "item_name": ["품목", false],
+      "remark": ["비고", false],
+      "approval_no": ["승인번호", true],
+      "transaction_time": ["거래일시", false],
+      "card_number_masked": ["카드번호", false],
+      "service_charge": ["봉사료", false]
+    },
+    "field_groups": [
+      ["기본 정보", ["document_type", "issue_date", "transaction_time", "approval_status", "confidence_score"]],
+      ["가맹점 정보", ["supplier_name", "supplier_biz_no"]],
+      ["결제 정보", ["approval_no", "card_number_masked", "supply_amount", "tax_amount", "service_charge", "total_amount"]],
+      ["추가 정보", ["buyer_name", "item_name", "remark"]]
+    ],
+    "summary_layout": {
+      "A1": "영수증 자동입력 결과",
+      "A3": "문서 유형", "E3": "거래일자",
+      "A6": "가맹점명", "E6": "가맹점 사업자번호",
+      "A8": "승인번호", "E8": "카드번호",
+      "A10": "비고",
+      "A14": "공급가액", "C14": "부가세", "E14": "합계금액",
+      "A17": "검수상태", "E17": "문서 신뢰도"
+    },
+    "summary_context": [
+      ["핵심 체크", "가맹점명 / 승인번호 / 합계금액", "영수증 필수 3요소"],
+      ["검수 우선순위", "거래일시 / 카드번호 / 봉사료", "카드매출전표는 카드번호 마스킹 확인"]
+    ],
+    "item_headers": {
+      "A2": "품목", "B2": "규격", "C2": "수량", "D2": "단가", "E2": "금액", "F2": "비고"
+    },
+    "item_sheet_title": "구매내역"
+  }
+}

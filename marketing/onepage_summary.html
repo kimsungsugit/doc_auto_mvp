@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문서 자동입력 도우미 1페이지 요약</title>
+  <style>
+    :root {
+      --bg: #f2eadf;
+      --surface: rgba(255, 251, 246, 0.94);
+      --line: rgba(59, 44, 26, 0.12);
+      --text: #1e1812;
+      --muted: #6f6457;
+      --accent: #0f766e;
+      --accent-soft: rgba(15, 118, 110, 0.08);
+      --shadow: 0 22px 54px rgba(30, 18, 10, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),
+        linear-gradient(180deg, #faf6ef 0%, var(--bg) 100%);
+    }
+
+    .page {
+      width: min(980px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .sheet {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px 28px 18px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(15, 118, 110, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 58px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .lead {
+      margin-top: 16px;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      padding: 20px 28px 28px;
+    }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.62);
+      padding: 20px;
+    }
+
+    .box h3 {
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .box p,
+    .box li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .number {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 34px;
+      color: var(--accent);
+      letter-spacing: -0.05em;
+      font-weight: 800;
+    }
+
+    .quote {
+      margin: 0 28px 28px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(15, 118, 110, 0.12);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.65;
+    }
+
+    .visual {
+      margin: 0 28px 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.62);
+      overflow: hidden;
+    }
+
+    .visual img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: top center;
+      max-height: 440px;
+    }
+
+    .visual-copy {
+      padding: 18px 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .result-strip {
+      margin: 0 28px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .result-box {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.68);
+      padding: 18px;
+    }
+
+    .result-box strong {
+      display: block;
+      font-size: 30px;
+      color: var(--accent);
+      letter-spacing: -0.05em;
+      margin-bottom: 6px;
+    }
+
+    .result-box span {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .terminal-mini {
+      margin: 0 28px 24px;
+      border: 1px solid rgba(59, 44, 26, 0.12);
+      border-radius: 22px;
+      overflow: hidden;
+      background: #15120f;
+      color: #f3eee6;
+    }
+
+    .terminal-mini-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(243, 238, 230, 0.62);
+    }
+
+    .terminal-mini-body {
+      padding: 16px;
+      font-family: "Consolas", "SFMono-Regular", monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .sample-strip {
+      margin: 0 28px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .sample-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .sample-box img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .sample-box p {
+      padding: 12px 14px 14px;
+      font-size: 14px;
+    }
+
+    .foot {
+      padding: 0 28px 28px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .grid,
+      .foot {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .quote {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      .visual {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      .result-strip {
+        grid-template-columns: 1fr;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      .terminal-mini {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+
+      .sample-strip {
+        grid-template-columns: 1fr;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="sheet">
+      <div class="hero">
+        <p class="eyebrow">One Page Summary</p>
+        <h1>문서 자동입력 도우미</h1>
+        <p class="lead">
+          세금계산서와 거래명세서 같은 반복 문서를 업로드하면 핵심 필드를 자동 추출하고,
+          사람이 필요한 부분만 검수한 뒤 지정 엑셀 양식으로 바로 출력하는 문서 자동화 도구입니다.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="box">
+          <h3>해결하는 문제</h3>
+          <ul>
+            <li>PDF를 보고 엑셀이나 내부 양식에 옮겨 적는 반복 입력 업무</li>
+            <li>담당자 숙련도에 따라 생기는 입력 실수와 검수 부담</li>
+            <li>실패 문서, 수정 이력, 결과물 관리의 번거로움</li>
+          </ul>
+        </article>
+        <article class="box">
+          <h3>처리 흐름</h3>
+          <ul>
+            <li>문서 업로드</li>
+            <li>텍스트 추출 및 OCR</li>
+            <li>필드 구조화와 정규화</li>
+            <li>검수와 수정</li>
+            <li>엑셀 출력과 로그 저장</li>
+          </ul>
+        </article>
+        <article class="box">
+          <h3>지원 범위</h3>
+          <ul>
+            <li>PDF, PNG, JPG, JPEG</li>
+            <li>단건 및 다건 업로드</li>
+            <li>전자세금계산서, 거래명세서</li>
+            <li>대시보드, 검색, 실패 재처리</li>
+          </ul>
+        </article>
+        <article class="box">
+          <h3>현재 개발 상태</h3>
+          <p><span class="number">25</span><br>샘플 문서 세트</p>
+          <p><span class="number">95/95</span><br>샘플 기반 필드 평가 통과</p>
+          <p><span class="number">1회</span><br>업로드부터 엑셀 결과물 생성까지 데모 실행 확인</p>
+        </article>
+        <article class="box">
+          <h3>운영형 기능</h3>
+          <ul>
+            <li>신뢰도 낮은 필드 경고 표시</li>
+            <li>수정 이력, 처리 로그 저장</li>
+            <li>실패 문서 재처리</li>
+            <li>검수 완료 후 결과 확정</li>
+          </ul>
+        </article>
+        <article class="box">
+          <h3>실투입 직전 필요 자료</h3>
+          <ul>
+            <li>비식별 실제 PDF 2~3건</li>
+            <li>실제 고객 엑셀 양식 1개</li>
+            <li>가능하면 스캔본 1~2건</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="result-strip">
+        <article class="result-box">
+          <strong>95/95</strong>
+          <span>샘플 필드 평가 통과</span>
+        </article>
+        <article class="result-box">
+          <strong>25</strong>
+          <span>샘플 문서 세트</span>
+        </article>
+        <article class="result-box">
+          <strong>16</strong>
+          <span>통합 제출본 페이지 수</span>
+        </article>
+      </div>
+
+      <div class="terminal-mini">
+        <div class="terminal-mini-head">verified demo result</div>
+        <div class="terminal-mini-body">sample_file: sample_19_statement_type.pdf
+document_type: 거래명세서
+supplier_name: 코어시스템
+buyer_name: 리드상사
+total_amount: 363,000
+item_name: 서버 유지관리
+excel_output: 124d234f42d3.xlsx</div>
+      </div>
+
+      <div class="sample-strip">
+        <article class="sample-box">
+          <img src="assets/sample_20_preview.png" alt="공개 양식형 세금계산서 샘플">
+          <p>공개 양식형 영수 세금계산서</p>
+        </article>
+        <article class="sample-box">
+          <img src="assets/sample_24_preview.png" alt="스캔풍 세금계산서 샘플">
+          <p>스캔풍 세금계산서 샘플</p>
+        </article>
+        <article class="sample-box">
+          <img src="assets/sample_25_preview.png" alt="스캔풍 거래명세서 샘플">
+          <p>스캔풍 거래명세서 샘플</p>
+        </article>
+      </div>
+
+      <div class="visual">
+        <img src="assets/app_home.png" alt="문서 자동입력 도우미 실제 앱 화면">
+        <div class="visual-copy">
+          실제 앱 화면 기준으로 업로드, 상태 요약, 문서 목록, 실패 문서 재처리 흐름까지 바로 설명할 수 있습니다.
+          즉, 아이디어 문서가 아니라 이미 동작하는 데모를 바탕으로 제안하는 상태입니다.
+        </div>
+      </div>
+
+      <div class="quote">
+        일반 ChatGPT가 문서를 이해하는 도구라면, 문서 자동입력 도우미는 반복 문서 입력 업무를 처리하는 도구입니다.
+      </div>
+
+      <div class="foot">
+        지금 상태는 소개, 비교, 제안, 데모까지 가능한 수준입니다.
+        마지막 단계는 실제 비식별 문서를 넣고 정확도와 엑셀 양식을 고객 환경에 맞춰 조정하는 일입니다.
+      </div>
+    </section>
+  </main>
+</body>
+</html>
